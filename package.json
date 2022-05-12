@@ -1,0 +1,22 @@
+{
+  "name": "rpp34-keegan-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "service.test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpp34-sdc-mainframe/rpp34-keegan-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rpp34-sdc-mainframe/rpp34-keegan-service/issues"
+  },
+  "homepage": "https://github.com/rpp34-sdc-mainframe/rpp34-keegan-service#readme",
+  "devDependencies": {
+    "jest": "^28.1.0"
+  }
+}
