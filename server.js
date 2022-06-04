@@ -51,7 +51,7 @@ app.get('/qa/questions', async (req, res) => {
     return db.addAnswers(cleanQuestions)
   })
   .then((answeredQuestions) => {
-    res.status(200).json(answeredQuestions);
+    res.status(200).json({results: answeredQuestions});
   })
 });
 
