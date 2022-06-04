@@ -1,36 +1,6 @@
 const mongoose = require('mongoose');
 const MongoClient = require('mongodb').MongoClient;
 
-const questionSchema = new mongoose.Schema({
-  question_id: Number,
-  question_body: String,
-  question_date: String,
-  asker_name: String,
-  question_helpfulness: Number,
-  reported: Boolean,
-  answers: [{ type: mongoose.Types.ObjectId, ref: 'answers' }]
-}, { collection: 'questions' });
-
-const answerSchema = new mongoose.Schema({
-  question_id: { type: mongoose.Types.ObjectId, ref: 'questions' } ,
-  answer_id: Number,
-  body: String,
-  date: String,
-  answerer_name: String,
-  helpfulness: Number,
-  reported: Boolean,
-  photos: [{ type: mongoose.Types.ObjectId, ref: 'photos' }]
-}, { collection: 'answers' });
-
-const photoSchema = new mongoose.Schema({
-  answer_id: { type: mongoose.Types.ObjectId, ref: 'answers' } ,
-  photo_url: String
-}, { collection: 'photos' });
-
-const question = mongoose.model('questions', questionSchema);
-const answer = mongoose.model('answers', answerSchema);
-const photo = mongoose.model('photos', photoSchema);
-
 function getQuestions(id) {
   return new Promise ((resolve, reject) => {
     MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
@@ -72,7 +42,6 @@ async function addAnswers(questions) {
       if (questions[i].answers) {
         let id = questions[i].answers[key].id;
         questions[i].answers[key].photos = await picsOrDidntHappen(id);
-
       }
     }
 
@@ -116,4 +85,4 @@ function picsOrDidntHappen(answerId) {
 };
 
 
-module.exports = { question, answer, photo, getQuestions, addAnswers }
+module.exports = { getQuestions, addAnswers }
