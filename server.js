@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const db = require('./data/mongoose.js');
+const schema = require('./data/schema.js');
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
@@ -33,26 +34,15 @@ app.get('/qa/questions', async (req, res) => {
   // expects product id, page (default 1), and count (default 5)
   // filters out reported questions, do not send them back
   // 200
-  console.log(req.query)
 
-  db.getQuestions(parseInt(req.query.product_id))
+  db.getQuestionsWithAnswers(parseInt(req.query.product_id))
   .then((questions) => {
-    let notReported = [];
+    res.status(200).json({results: questions});
+  })
+  .catch((err) => {
+    res.status(500);
+  });
 
-    for (var i = 0; i < questions.length; i++) {
-      if (questions[i].reported !== 1) {
-        notReported.push(questions[i]);
-      }
-    }
-
-    return notReported;
-  })
-  .then((cleanQuestions) => {
-    return db.addAnswers(cleanQuestions)
-  })
-  .then((answeredQuestions) => {
-    res.status(200).json({results: answeredQuestions});
-  })
 });
 
 app.get('/qa/questions/:question_id/answers', async (req, res) => {
@@ -60,12 +50,25 @@ app.get('/qa/questions/:question_id/answers', async (req, res) => {
   // expects question id (in url)
   // expects page (default 1) and count (default 5)
   // 200
+
+  db.getAnswersWithPhotos(parseInt(req.params.question_id))
+  .then((answers) => {
+    res.status(200).json(answers);
+  })
+  .catch((err) => {
+    res.status(500);
+  });
+
 });
 
 app.post('/qa/questions', async (req, res) => {
   // post a question to a product id
   // expects body, name, email, product id
   // 201
+
+  console.log(req.body);
+
+
 });
 
 app.post('/qa/questions/:question_id/answers', async (req, res) => {

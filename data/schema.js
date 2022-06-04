@@ -6,23 +6,19 @@ const questionSchema = new mongoose.Schema({
   question_date: String,
   asker_name: String,
   question_helpfulness: Number,
-  reported: Boolean,
-  answers: [{ type: mongoose.Types.ObjectId, ref: 'answers' }]
+  reported: Boolean
 }, { collection: 'questions' });
 
 const answerSchema = new mongoose.Schema({
-  question_id: { type: mongoose.Types.ObjectId, ref: 'questions' } ,
   answer_id: Number,
   body: String,
   date: String,
   answerer_name: String,
   helpfulness: Number,
-  reported: Boolean,
-  photos: [{ type: mongoose.Types.ObjectId, ref: 'photos' }]
+  reported: Boolean
 }, { collection: 'answers' });
 
 const photoSchema = new mongoose.Schema({
-  answer_id: { type: mongoose.Types.ObjectId, ref: 'answers' } ,
   photo_url: String
 }, { collection: 'photos' });
 
