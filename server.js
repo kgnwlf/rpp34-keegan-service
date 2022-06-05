@@ -7,27 +7,13 @@ const schema = require('./data/schema.js');
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 
-// app.get('/', (req, res) => {
-//   console.log('Hit route');
-//   db.getQuestions(3)
-//   .then((questions) => {
-//     let notReported = [];
+app.get('/', (req, res) => {
+  db.findNextQuestionId(3)
+  .then((id) => {
+    res.json(id);
+  });
 
-//     for (var i = 0; i < questions.length; i++) {
-//       if (questions[i].reported !== 1) {
-//         notReported.push(questions[i]);
-//       }
-//     }
-
-//     return notReported;
-//   })
-//   .then((cleanQuestions) => {
-//     return db.addAnswers(cleanQuestions)
-//   })
-//   .then((answeredQuestions) => {
-//     res.status(200).json(answeredQuestions);
-//   })
-// });
+});
 
 app.get('/qa/questions', async (req, res) => {
   // gets questions for a product id
@@ -66,8 +52,14 @@ app.post('/qa/questions', async (req, res) => {
   // expects body, name, email, product id
   // 201
 
-  console.log(req.body);
-
+  db.addQuestion(req.body)
+  .then((success) => {
+    console.log(success);
+    res.status(201).end();
+  })
+  .catch((err) => {
+    res.status(500).end();
+  });
 
 });
 
@@ -76,34 +68,79 @@ app.post('/qa/questions/:question_id/answers', async (req, res) => {
   // expects question id (in url)
   // expects body, name, email, and photos
   // 201
+
+  console.log(req.body, req.params);
+
+  db.addAnswer(req.body)
+  .then(() => {
+    res.status(201).end();
+  })
+  .catch(() => {
+    res.status(500).end();
+  });
+
 });
 
 app.put('/qa/questions/:question_id/helpful', async (req, res) => {
   // mark question as helpful
   // expects question id (in url)
   // 204
+
+  console.log(req.params.question_id)
+
+  db.helpful('questions', parseInt(req.params.question_id))
+  .then(() => {
+    res.status(204).end();
+  })
+  .catch(() => {
+    res.status(500).end();
+  });
+
 });
 
 app.put('/qa/questions/:question_id/report', async (req, res) => {
   // report a question
   // expect question id (in url)
   // 204
+
+  db.report('questions', parseInt(req.params.question_id))
+  .then(() => {
+    res.status(204).end();
+  })
+  .catch(() => {
+    res.status(500).end();
+  })
+
 });
 
 app.put('/qa/answers/:answer_id/helpful', async (req, res) => {
   // mark an answer as helpful
   // expects an answer id (in url)
   // 204
+
+  db.helpful('answers', parseInt(req.params.answer_id))
+  .then(() => {
+    res.status(204).end();
+  })
+  .catch(() => {
+    res.status(204).end();
+  });
+
 });
 
 app.put('/qa/answers/:answer_id/report', async (req, res) => {
   // report an answer
   // expects an answer id (in url)
   // 204
-});
 
-mongoose.connect('mongodb://localhost/QnA', { useNewUrlParser: true }, () => {
-  console.log('Connected to QnA database');
+  db.report('answers', parseInt(req.params.answer_id))
+  .then(() => {
+    res.status(204).end();
+  })
+  .catch(() => {
+    res.status(500).end();
+  })
+
 });
 
 app.listen(3001, () => {
