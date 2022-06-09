@@ -30,7 +30,7 @@ function iWantAnswers(questionId) {
         }
 
         resolve(result);
-
+        db.close();
       });
     });
   });
@@ -46,7 +46,7 @@ function picsOrDidntHappen(answerId) {
         }
 
         resolve(result);
-
+        db.close();
       });
     });
   });
@@ -59,6 +59,7 @@ function findNextQuestionId() {
         if (err) {
           reject(err);
         }
+
         resolve(result[0].question_id + 1);
         db.close();
       });
@@ -73,6 +74,7 @@ function findNextAnswerId() {
         if (err) {
           reject(err);
         }
+
         resolve(result[0].id + 1);
         db.close();
       });
@@ -83,6 +85,10 @@ function findNextAnswerId() {
 function postNewQuestion(params) {
   return new Promise((resolve, reject) => {
     MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+      if (err) {
+        reject(err);
+      }
+
       db.db('QnA').collection('questions').insertOne({
         question_id: params.id,
         product_id: params.product_id,
@@ -107,6 +113,10 @@ function postNewQuestion(params) {
 function postNewAnswer(params) {
   return new Promise((resolve, reject) => {
     MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+      if (err) {
+        reject(err);
+      }
+
       db.db('QnA').collection('answer').insertOne({
         id: params.id,
         date: new Date(),

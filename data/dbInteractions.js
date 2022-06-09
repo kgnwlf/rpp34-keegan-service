@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const MongoClient = require('mongodb').MongoClient;
-const promise = require('./promiseHelpers');
+const promise = require('./promiseHelpers.js');
 
 async function getQuestionsWithAnswers(productId) {
   let questions = await promise.getQuestions(productId)
@@ -46,7 +46,7 @@ async function getAnswersWithPhotos(questionId) {
 
 async function addAnswers(questions) {
   for (var i = 0; i < questions.length; i++) {
-    questions[i].answers = await promise.iWantAnswers(questions[i].id)
+    questions[i].answers = await promise.iWantAnswers(questions[i].question_id)
     .then((answers) => {
       let notReported = {};
 
@@ -113,7 +113,8 @@ function report(collection, id) {
   });
 };
 
-module.exports = { getQuestionsWithAnswers,
+module.exports = {
+  getQuestionsWithAnswers,
   addAnswers,
   getAnswersWithPhotos,
   addQuestion,

@@ -4,7 +4,7 @@
   "description": "",
   "main": "service.test.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "start": "nodemon server.js"
   },
   "repository": {
@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/rpp34-sdc-mainframe/rpp34-keegan-service#readme",
   "devDependencies": {
-    "jest": "^28.1.0"
+    "jest": "^28.1.0",
+    "supertest": "^6.2.3"
   },
   "dependencies": {
     "dotenv": "^16.0.1",
