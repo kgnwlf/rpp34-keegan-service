@@ -22,6 +22,7 @@ app.get('/qa/questions', async (req, res) => {
 
   // ADD ERROR HANDLING FOR INCOMING INFORMATION
 
+
   db.getQuestionsWithAnswers(parseInt(req.query.product_id))
   .then((questions) => {
     res.status(200).json({results: questions});
@@ -83,8 +84,6 @@ app.put('/qa/questions/:question_id/helpful', async (req, res) => {
   // mark question as helpful
   // expects question id (in url)
   // 204
-
-  console.log(req.params.question_id)
 
   db.helpful('questions', parseInt(req.params.question_id))
   .then(() => {

@@ -59,7 +59,7 @@ function findNextQuestionId() {
         if (err) {
           reject(err);
         }
-
+        console.log(result);
         resolve(result[0].question_id + 1);
         db.close();
       });
@@ -91,7 +91,7 @@ function postNewQuestion(params) {
 
       db.db('QnA').collection('questions').insertOne({
         question_id: params.id,
-        product_id: params.product_id,
+        product_id: parseInt(params.product_id),
         question_date: new Date(),
         question_body: params.body,
         asker_name: params.name,
@@ -118,7 +118,7 @@ function postNewAnswer(params) {
       }
 
       db.db('QnA').collection('answer').insertOne({
-        id: params.id,
+        id: parseInt(params.id),
         date: new Date(),
         body: params.body,
         answerer_name: params.name,
