@@ -2,3 +2,6 @@ node_modules
 .env
 csvData
 coverage
+connectingToAWS.txt
+sdc.pem
+.misc

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-const db = require('./data/dbInteractions.js');
-const schema = require('./data/schema.js');
+const db = require('../data/dbInteractions.js');
+const schema = require('../data/schema.js');
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));

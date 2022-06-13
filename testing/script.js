@@ -3,10 +3,6 @@ import { sleep } from 'k6';
 
 let root = 'http://localhost:3001';
 
-// let answer = (Math.floor(Math.random() * 600000)) + 6120000;
-
-// let product = (Math.floor(Math.random() * 100001)) + 900000;
-
 export let options = {
   // stages: [
   //   { duration: '30s', target: 10 },
