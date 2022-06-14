@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const MongoClient = require('mongodb').MongoClient;
 
+const db = 'mongodb://localhost/QnA';
+
 function getQuestions(id) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       if (err) {
         reject(err);
       };
@@ -22,7 +24,7 @@ function getQuestions(id) {
 
 function iWantAnswers(questionId) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
 
       db.db('QnA').collection('answers').find({ question_id: questionId }).toArray(function (err, result) {
         if (err) {
@@ -39,7 +41,7 @@ function iWantAnswers(questionId) {
 function picsOrDidntHappen(answerId) {
   return new Promise((resolve, reject) => {
 
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       db.db('QnA').collection('photos').find({ answer_id: answerId }).toArray(function (err, result) {
         if (err) {
           reject(err);
@@ -54,7 +56,7 @@ function picsOrDidntHappen(answerId) {
 
 function findNextQuestionId() {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       db.db('QnA').collection('questions').find().sort({ question_id: -1 }).limit(1).toArray(function (err, result) {
         if (err) {
           reject(err);
@@ -69,7 +71,7 @@ function findNextQuestionId() {
 
 function findNextAnswerId() {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       db.db('QnA').collection('answers').find().sort({ id: -1 }).limit(1).toArray(function (err, result) {
         if (err) {
           reject(err);
@@ -84,7 +86,7 @@ function findNextAnswerId() {
 
 function postNewQuestion(params) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       if (err) {
         reject(err);
       }
@@ -112,7 +114,7 @@ function postNewQuestion(params) {
 
 function postNewAnswer(params) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       if (err) {
         reject(err);
       }
@@ -139,7 +141,7 @@ function postNewAnswer(params) {
 
 function getQuestionHelpfulness(id) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       db.db('QnA').collection('questions').find({ question_id: id }).limit(1).toArray(function(err, result) {
         if (err) {
           reject(err);
@@ -154,7 +156,7 @@ function getQuestionHelpfulness(id) {
 
 function getAnswerHelpfulness(id) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       db.db('QnA').collection('answers').find({ id: id }).limit(1).toArray(function(err, result) {
         if (err) {
           reject(err);
@@ -169,7 +171,7 @@ function getAnswerHelpfulness(id) {
 
 function markHelpful(collection, id, helpfulness) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(db, (err, db) => {
       let query;
       let change;
 
@@ -198,5 +200,6 @@ module.exports = {
   postNewAnswer,
   getQuestionHelpfulness,
   getAnswerHelpfulness,
-  markHelpful
+  markHelpful,
+  db: db
 };

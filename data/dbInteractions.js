@@ -96,7 +96,7 @@ async function helpful(collection, id) {
 
 function report(collection, id) {
   return new Promise((resolve, reject) => {
-    MongoClient.connect('mongodb://localhost/QnA', (err, db) => {
+    MongoClient.connect(promise.db, (err, db) => {
       let query;
 
       collection === 'questions' ? query = { question_id: id } : query = { id: id };
