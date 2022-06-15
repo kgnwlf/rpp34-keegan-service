@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 
 app.get('/', (req, res) => {
-  db.findNextQuestionId(3)
+  db.helpful('questions', 3)
   .then((id) => {
     res.json(id);
   });
@@ -89,8 +89,8 @@ app.put('/qa/questions/:question_id/helpful', async (req, res) => {
   .then(() => {
     res.status(204).end();
   })
-  .catch(() => {
-    res.status(500).end();
+  .catch((err) => {
+    res.status(500).send(err);
   });
 
 });

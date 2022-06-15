@@ -5,3 +5,4 @@ coverage
 connectingToAWS.txt
 sdc.pem
 .misc
+/dump
