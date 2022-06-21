@@ -6,11 +6,8 @@ const schema = require('../data/schema.js');
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 
-app.get('/', (req, res) => {
-  db.helpful('questions', 3)
-  .then((id) => {
-    res.json(id);
-  });
+app.get('/loaderio-56a1edfcf5cd875ecf763ecc0b322e02', (req, res) => {
+  res.send('loaderio-56a1edfcf5cd875ecf763ecc0b322e02').end();
 
 });
 
