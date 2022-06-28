@@ -2,8 +2,10 @@ const express = require('express');
 const app = express();
 const routes = require('./routes.js');
 
+let port = 8080;
+
 app.use(routes);
 
-app.listen(3001, () => {
-  console.log('Listening on port 3001...');
+app.listen(port, () => {
+  console.log(`Listening on port ${port}...`);
 });
