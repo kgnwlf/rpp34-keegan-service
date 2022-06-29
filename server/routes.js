@@ -127,11 +127,14 @@ app.put('/qa/answers/:answer_id/report', async (req, res) => {
   // expects an answer id (in url)
   // 204
 
+  console.log(req.params.answer_id);
+
   db.report('answers', parseInt(req.params.answer_id))
   .then(() => {
     res.status(204).end();
   })
-  .catch(() => {
+  .catch((err) => {
+    console.log(err);
     res.status(500).end();
   })
 
