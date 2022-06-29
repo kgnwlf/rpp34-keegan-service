@@ -6,8 +6,8 @@ const schema = require('../data/schema.js');
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 
-app.get('/', (req, res) => {
-  res.send('').end();
+app.get('/loaderio-b4aecd85ad6d00b93787bfe2bb37251e', (req, res) => {
+  res.send('loaderio-b4aecd85ad6d00b93787bfe2bb37251e').end();
 
 });
 
