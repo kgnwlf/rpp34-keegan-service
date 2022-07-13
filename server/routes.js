@@ -6,9 +6,8 @@ const schema = require('../data/schema.js');
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 
-app.get('/loaderio-b4aecd85ad6d00b93787bfe2bb37251e', (req, res) => {
-  res.send('loaderio-b4aecd85ad6d00b93787bfe2bb37251e').end();
-
+app.get('/loaderio-6384d47a9846d829fd5cc96d2473432e', (req, res) => {
+  res.send('loaderio-6384d47a9846d829fd5cc96d2473432e').end();
 });
 
 app.get('/qa/questions', async (req, res) => {

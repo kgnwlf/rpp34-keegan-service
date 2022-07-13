@@ -87,10 +87,11 @@ async function addAnswer(params) {
 }
 
 async function helpful(collection, id) {
+  console.log('IN HELPFUL', collection, id);
   let helpfulness;
 
   collection === 'questions' ? helpfulness = await promise.getQuestionHelpfulness(id) : helpfulness = await promise.getAnswerHelpfulness(id);
-
+  console.log(helpfulness)
   return promise.markHelpful(collection, id, helpfulness);
 }
 

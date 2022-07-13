@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const MongoClient = require('mongodb').MongoClient;
+const realDB = require('./database.js');
 
-const url = 'mongodb://remote:password@18.118.104.4:27017/QnA';
+const url = 'mongodb://remote:password@18.222.85.65:27017/QnA';
 
 function getQuestions(id) {
   return new Promise((resolve, reject) => {
@@ -154,67 +155,25 @@ function postNewAnswer(params) {
   });
 };
 
-function getQuestionHelpfulness(id) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
+async function getQuestionHelpfulness(id) {
+  let helpfulness = await realDB.collection('questions').find({ question_id: id }).toArray();
+  return helpfulness[0].question_helpfulness + 1;
 
-      db.db('QnA').collection('questions').find({ question_id: id }).limit(1).toArray(function(err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result[0].question_helpfulness + 1);
-        db.close();
-      });
-    });
-  });
 };
 
-function getAnswerHelpfulness(id) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('answers').find({ id: id }).limit(1).toArray(function(err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result[0].helpfulness + 1);
-        db.close();
-      });
-    });
-  });
+async function getAnswerHelpfulness(id) {
+  let helpfulness = await realDB.collection('answers').find({ id: id }).toArray();
+  return helpfulness[0].helpfulness + 1;
 };
 
 function markHelpful(collection, id, helpfulness) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
+  let query;
+  let change;
 
-      let query;
-      let change;
+  collection === 'questions' ? query = { question_id: id } : query = { id: id };
+  collection === 'questions' ? change = { question_helpfulness: helpfulness } : change = { helpfulness: helpfulness };
 
-      collection === 'questions' ? query = { question_id: id } : query = { id: id };
-      collection === 'questions' ? change = { question_helpfulness: helpfulness } : change = { helpfulness: helpfulness };
-
-      db.db('QnA').collection(collection).updateOne(query, { $set: change }, function (err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result);
-        db.close();
-      });
-    });
-  });
+  realDB.collection(collection).updateOne(query, { $set: change });
 };
 
 module.exports = {
