@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const MongoClient = require('mongodb').MongoClient;
 const promise = require('./promiseHelpers.js');
+const db = require('./database.js');
 
 async function getQuestionsWithAnswers(productId) {
   let questions = await promise.getQuestions(productId)
@@ -87,31 +88,19 @@ async function addAnswer(params) {
 }
 
 async function helpful(collection, id) {
-  console.log('IN HELPFUL', collection, id);
   let helpfulness;
 
   collection === 'questions' ? helpfulness = await promise.getQuestionHelpfulness(id) : helpfulness = await promise.getAnswerHelpfulness(id);
-  console.log(helpfulness)
+
   return promise.markHelpful(collection, id, helpfulness);
 }
 
-function report(collection, id) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(promise.url, (err, db) => {
-      let query;
+async function report(collection, id) {
+  let query;
 
-      collection === 'questions' ? query = { question_id: id } : query = { id: id };
+  collection === 'questions' ? query = { question_id: id } : query = { id: id };
 
-      db.db('QnA').collection(collection).updateOne(query, { $set: { reported: 1 } }, function (err, result) {
-        if (err) {
-          reject(err);
-        }
-
-        resolve(result);
-        db.close();
-      });
-    });
-  });
+  await db.collection(collection).updateOne(query, { $set: { reported: 1 } });
 };
 
 module.exports = {
