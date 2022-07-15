@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const schema = require('./schema.js');
 mongoose.connect('mongodb://remote:password@172.31.41.224:27017/QnA');
 
 const db = mongoose.connection;
