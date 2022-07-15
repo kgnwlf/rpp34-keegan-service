@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const MongoClient = require('mongodb').MongoClient;
 const promise = require('./promiseHelpers.js');
 const db = require('./database.js');
+const schema = require('./schema.js');
 
 async function getQuestionsWithAnswers(productId) {
-  let questions = await promise.getQuestions(productId)
+  let questions = await db.collection('questions').find({ product_id: productId }).toArray()
   .then((questions) => {
     let notReported = [];
 
@@ -23,7 +24,7 @@ async function getQuestionsWithAnswers(productId) {
 }
 
 async function getAnswersWithPhotos(questionId) {
-  let answers = await promise.iWantAnswers(questionId)
+  let answers = await db.collection('answers').find({ question_id: questionId }).toArray()
   .then((answers) => {
     let notReported = {};
 
@@ -39,7 +40,7 @@ async function getAnswersWithPhotos(questionId) {
 
   for (var key in answers) {
     let id = answers[key].id;
-    answers[key].photos = await promise.picsOrDidntHappen(id);
+    answers[key].photos = await db.collection('photos').find({ answer_id: id }).toArray();
   }
 
   return answers;
@@ -47,7 +48,7 @@ async function getAnswersWithPhotos(questionId) {
 
 async function addAnswers(questions) {
   for (var i = 0; i < questions.length; i++) {
-    questions[i].answers = await promise.iWantAnswers(questions[i].question_id)
+    questions[i].answers = await db.collection('answers').find({ question_id: questions[i].question_id }).toArray()
     .then((answers) => {
       let notReported = {};
 
@@ -66,7 +67,7 @@ async function addAnswers(questions) {
     for (var key in questions[i].answers) {
       if (questions[i].answers) {
         let id = questions[i].answers[key].id;
-        questions[i].answers[key].photos = await promise.picsOrDidntHappen(id);
+        questions[i].answers[key].photos = await db.collection('photos').find({ answer_id: id }).toArray();
       }
     }
 
@@ -76,15 +77,44 @@ async function addAnswers(questions) {
 }
 
 async function addQuestion(params) {
-  params.id = await promise.findNextQuestionId();
+  let nextId = await db.collection('questions').find().sort({ question_id: -1 }).limit(1).toArray();
 
-  return promise.postNewQuestion(params);
-}
+  params.id = nextId[0].question_id + 1;
+
+  let newQuestion = new schema.question({
+    question_id: params.id,
+    product_id: parseInt(params.product_id),
+    question_date: new Date(),
+    question_body: params.body,
+    asker_name: params.name,
+    asker_email: params.email,
+    reported: 0,
+    question_helpfulness: 0
+  });
+
+  await newQuestion.save();
+
+  return newQuestion;
+};
 
 async function addAnswer(params) {
-  params.id = await promise.findNextAnswerId();
+  let nextId = await db.collection('answers').find().sort({ id: -1 }).limit(1).toArray();
 
-  return promise.postNewAnswer(params);
+  params.id = nextId[0].id + 1;
+
+  let newAnswer = new schema.answer({
+    id: parseInt(params.id),
+    date: new Date(),
+    body: params.body,
+    answerer_name: params.name,
+    answerer_email: params.email,
+    reported: 0,
+    helpfulness: 0
+  });
+
+  await newAnswer.save();
+
+  return newAnswer;
 }
 
 async function helpful(collection, id) {

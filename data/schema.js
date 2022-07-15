@@ -6,7 +6,7 @@ const questionSchema = new mongoose.Schema({
   question_date: String,
   asker_name: String,
   question_helpfulness: Number,
-  reported: Boolean
+  reported: Number
 }, { collection: 'questions' });
 
 const answerSchema = new mongoose.Schema({
@@ -15,7 +15,7 @@ const answerSchema = new mongoose.Schema({
   date: String,
   answerer_name: String,
   helpfulness: Number,
-  reported: Boolean
+  reported: Number
 }, { collection: 'answers' });
 
 const photoSchema = new mongoose.Schema({

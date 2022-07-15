@@ -1,168 +1,15 @@
 const mongoose = require('mongoose');
 const MongoClient = require('mongodb').MongoClient;
-const realDB = require('./database.js');
-
-const url = 'mongodb://remote:password@18.222.85.65:27017/QnA';
-
-function getQuestions(id) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('questions').find({ product_id: id }).toArray(function(err, result) {
-        if (err) {
-          reject(err);
-        }
-
-        resolve(result);
-        db.close();
-      });
-    });
-  });
-};
-
-function iWantAnswers(questionId) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('answers').find({ question_id: questionId }).toArray(function (err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result);
-        db.close();
-      });
-    });
-  });
-};
-
-function picsOrDidntHappen(answerId) {
-  return new Promise((resolve, reject) => {
-
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('photos').find({ answer_id: answerId }).toArray(function (err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result);
-        db.close();
-      });
-    });
-  });
-};
-
-function findNextQuestionId() {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('questions').find().sort({ question_id: -1 }).limit(1).toArray(function (err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result[0].question_id + 1);
-        db.close();
-      });
-    });
-  });
-};
-
-function findNextAnswerId() {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('answers').find().sort({ id: -1 }).limit(1).toArray(function (err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result[0].id + 1);
-        db.close();
-      });
-    });
-  });
-};
-
-function postNewQuestion(params) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('questions').insertOne({
-        question_id: params.id,
-        product_id: parseInt(params.product_id),
-        question_date: new Date(),
-        question_body: params.body,
-        asker_name: params.name,
-        asker_email: params.email,
-        reported: 0,
-        question_helpfulness: 0
-      }, function(err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result);
-        db.close();
-      });
-    });
-  });
-};
-
-function postNewAnswer(params) {
-  return new Promise((resolve, reject) => {
-    MongoClient.connect(url, (err, db) => {
-      if (err) {
-        reject(err);
-      };
-
-      db.db('QnA').collection('answer').insertOne({
-        id: parseInt(params.id),
-        date: new Date(),
-        body: params.body,
-        answerer_name: params.name,
-        answerer_email: params.email,
-        reported: 0,
-        helpfulness: 0
-      }, function(err, result) {
-        if (err) {
-          reject(err);
-        };
-
-        resolve(result);
-        db.close();
-      });
-    });
-  });
-};
+const db = require('./database.js');
 
 async function getQuestionHelpfulness(id) {
-  let helpfulness = await realDB.collection('questions').find({ question_id: id }).toArray();
+  let helpfulness = await db.collection('questions').find({ question_id: id }).toArray();
   return helpfulness[0].question_helpfulness + 1;
 
 };
 
 async function getAnswerHelpfulness(id) {
-  let helpfulness = await realDB.collection('answers').find({ id: id }).toArray();
+  let helpfulness = await db.collection('answers').find({ id: id }).toArray();
   return helpfulness[0].helpfulness + 1;
 };
 
@@ -173,19 +20,11 @@ function markHelpful(collection, id, helpfulness) {
   collection === 'questions' ? query = { question_id: id } : query = { id: id };
   collection === 'questions' ? change = { question_helpfulness: helpfulness } : change = { helpfulness: helpfulness };
 
-  realDB.collection(collection).updateOne(query, { $set: change });
+  db.collection(collection).updateOne(query, { $set: change });
 };
 
 module.exports = {
-  getQuestions,
-  iWantAnswers,
-  picsOrDidntHappen,
-  findNextQuestionId,
-  findNextAnswerId,
-  postNewQuestion,
-  postNewAnswer,
   getQuestionHelpfulness,
   getAnswerHelpfulness,
-  markHelpful,
-  url: url
+  markHelpful
 };

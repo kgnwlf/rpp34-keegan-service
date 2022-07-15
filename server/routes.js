@@ -18,7 +18,7 @@ app.get('/qa/questions', async (req, res) => {
 
   // ADD ERROR HANDLING FOR INCOMING INFORMATION
 
-
+  console.log('getting questions...')
   db.getQuestionsWithAnswers(parseInt(req.query.product_id))
   .then((questions) => {
     res.status(200).json({results: questions});
@@ -52,9 +52,11 @@ app.post('/qa/questions', async (req, res) => {
 
   db.addQuestion(req.body)
   .then((success) => {
+    console.log(success);
     res.status(201).end();
   })
   .catch((err) => {
+    console.log(err);
     res.status(500).end();
   });
 
