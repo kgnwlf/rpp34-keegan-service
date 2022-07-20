@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://remote:password@172.31.41.224:27017/QnA');
+mongoose.connect('mongodb://localhost:27017/QnA');
 
 const db = mongoose.connection;
 
