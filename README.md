@@ -68,8 +68,11 @@ that load balancer, the use of extra API instances, and significant code optimiz
 <br>
 
 [Post-Improvement Route Results](https://www.notion.so/SDC-Final-Deployed-Stress-Test-ca91a92878414fc7b79540dbf6415072)
+<br>
 
-## Conclusion/Challenges
+### Conclusion
 
-
+The conclusion of all this work was a microservice that is able to quickly and accurately serve question and answer data for the right product to the
+client. Database query times came down from a high of 1700ms average to just a 2ms average and the NGINX load balancer brought average request loads from 
+<1,000 requests per second to 4,250. 
 
